@@ -24,7 +24,6 @@
             justify-content: center;
         }
 
-        /* Pixel Art Animation */
         .maa-character {
             width: 64px;
             height: 64px;
@@ -99,6 +98,12 @@
             font-family: inherit;
         }
 
+        .sudoku-pencil {
+            background: rgba(255, 255, 255, 0.5);
+            font-size: 0.8em;
+            color: gray;
+        }
+
         /* Kakuro Grid */
         .kakuro-grid {
             border: 2px solid var(--pink-primary);
@@ -128,6 +133,14 @@
             background: var(--pink-primary);
             border-radius: 50%;
             position: absolute;
+            cursor: pointer;
+        }
+
+        .slitherlink-line {
+            position: absolute;
+            background-color: var(--pink-primary);
+            width: 2px;
+            height: 2px;
         }
 
         /* Responsive Layout */
@@ -155,7 +168,6 @@
     </style>
 </head>
 <body>
-    <!-- Main Menu -->
     <div class="game-select" id="main-menu">
         <div class="maa-character"></div>
         <h2>Happy Mother's Day, Maa! ❤️</h2>
@@ -168,6 +180,7 @@
     <div class="game-container" id="sudoku-game">
         <button class="back-btn" onclick="showMainMenu()">← Back</button>
         <h3>Sudoku</h3>
+        <button class="game-btn" onclick="togglePencil()">Pencil Mode</button>
         <table class="sudoku-grid" id="sudoku-grid"></table>
     </div>
 
@@ -214,7 +227,19 @@
             }
         }
 
-        // Sudoku Implementation (real 9x9 game)
+        // Sudoku Implementation (real 9x9 game with pencil mode)
+        let pencilMode = false;
+        function togglePencil() {
+            pencilMode = !pencilMode;
+            document.querySelectorAll('.sudoku-cell').forEach(cell => {
+                if (pencilMode) {
+                    cell.classList.add('sudoku-pencil');
+                } else {
+                    cell.classList.remove('sudoku-pencil');
+                }
+            });
+        }
+
         function initSudoku() {
             const grid = document.querySelector('#sudoku-grid');
             grid.innerHTML = '';
@@ -245,6 +270,12 @@
                         input.disabled = true;
                     }
 
+                    input.addEventListener('input', function() {
+                        if (!input.disabled && !pencilMode) {
+                            input.classList.remove('sudoku-pencil');
+                        }
+                    });
+
                     cell.appendChild(input);
                     row.appendChild(cell);
                 }
@@ -252,63 +283,37 @@
             }
         }
 
-        // Kakuro Implementation (simple 3x3 demo)
-        function initKakuro() {
-            const grid = document.querySelector('#kakuro-grid');
-            grid.innerHTML = '';
-            for(let r=0; r<3; r++) {
-                let row = document.createElement('tr');
-                for(let c=0; c<3; c++) {
-                    let cell = document.createElement('td');
-                    cell.className = 'kakuro-cell';
-                    if((r === 0 && c === 0) || (r === 1 && c === 1)) {
-                        cell.style.background = '#ffb6c1';
-                    } else {
-                        let input = document.createElement('input');
-                        input.type = 'text';
-                        input.maxLength = 2;
-                        input.style.width = '90%';
-                        input.style.height = '90%';
-                        input.style.textAlign = 'center';
-                        input.style.fontSize = '1em';
-                        input.style.background = 'transparent';
-                        input.style.border = 'none';
-                        cell.appendChild(input);
-                    }
-                    row.appendChild(cell);
-                }
-                grid.appendChild(row);
-            }
-        }
-
-        // Slitherlink Implementation (simple 3x3 demo)
+        // Slitherlink Implementation (with dots and lines)
         function initSlitherlink() {
             const grid = document.querySelector('#slitherlink-grid');
             grid.innerHTML = '';
-            for(let r=0; r<3; r++) {
-                let row = document.createElement('div');
-                row.style.display = 'flex';
-                for(let c=0; c<3; c++) {
-                    let cell = document.createElement('div');
-                    cell.style.width = '40px';
-                    cell.style.height = '40px';
-                    cell.style.border = '1px solid #ff99cc';
-                    cell.style.display = 'flex';
-                    cell.style.alignItems = 'center';
-                    cell.style.justifyContent = 'center';
-                    cell.style.margin = '2px';
-                    cell.style.background = '#fff8fb';
-                    cell.textContent = Math.floor(Math.random()*4);
-                    row.appendChild(cell);
-                }
-                grid.appendChild(row);
-            }
-        }
+            const size = 5; // 5x5 grid
+            const dots = [];
+            const lines = [];
+            const width = 30;
+            const height = 30;
 
-        // Initial setup
-        document.addEventListener('DOMContentLoaded', () => {
-            // Optionally initialize something
-        });
+            // Place dots
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    const dot = document.createElement('div');
+                    dot.classList.add('slitherlink-dot');
+                    dot.style.top = `${i * (height + 5)}px`;
+                    dot.style.left = `${j * (width + 5)}px`;
+                    dots.push(dot);
+                    grid.appendChild(dot);
+                }
+            }
+
+            // Allow players to click and connect dots
+            grid.addEventListener('click', function(e) {
+                if (e.target.classList.contains('slitherlink-dot')) {
+                    const clickedDot = e.target;
+                    clickedDot.style.background = 'green'; // Example of clicked dot color
+                    // Add logic to start connecting dots with lines
+                }
+            });
+        }
     </script>
 </body>
 </html>
