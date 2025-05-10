@@ -28,7 +28,7 @@
         .maa-character {
             width: 64px;
             height: 64px;
-            background: url('https://i.imgur.com/8QfQk1g.png') 0 0; /* Ensure the image URL is correct */
+            background: url('https://i.imgur.com/8QfQk1g.png') 0 0;
             image-rendering: pixelated;
             animation: walk 1s steps(4) infinite;
             margin: 20px auto;
@@ -168,21 +168,21 @@
     <div class="game-container" id="sudoku-game">
         <button class="back-btn" onclick="showMainMenu()">← Back</button>
         <h3>Sudoku</h3>
-        <table class="sudoku-grid"></table>
+        <table class="sudoku-grid" id="sudoku-grid"></table>
     </div>
 
     <!-- Kakuro Game -->
     <div class="game-container" id="kakuro-game">
         <button class="back-btn" onclick="showMainMenu()">← Back</button>
         <h3>Kakuro</h3>
-        <table class="kakuro-grid"></table>
+        <table class="kakuro-grid" id="kakuro-grid"></table>
     </div>
 
     <!-- Slitherlink Game -->
     <div class="game-container" id="slitherlink-game">
         <button class="back-btn" onclick="showMainMenu()">← Back</button>
         <h3>Loop the Loop (Slitherlink)</h3>
-        <div class="slitherlink-grid"></div>
+        <div class="slitherlink-grid" id="slitherlink-grid"></div>
     </div>
 
     <script>
@@ -214,18 +214,37 @@
             }
         }
 
-        // Sudoku Implementation (simple 4x4 demo)
+        // Sudoku Implementation (real 9x9 game)
         function initSudoku() {
-            const grid = document.querySelector('.sudoku-grid');
+            const grid = document.querySelector('#sudoku-grid');
             grid.innerHTML = '';
-            for(let r=0; r<4; r++) {
+
+            const sudokuBoard = [
+                [5, 3, 0, 0, 7, 0, 0, 0, 0],
+                [6, 0, 0, 1, 9, 5, 0, 0, 0],
+                [0, 9, 8, 0, 0, 0, 0, 6, 0],
+                [8, 0, 0, 0, 6, 0, 0, 0, 3],
+                [4, 0, 0, 8, 0, 3, 0, 0, 1],
+                [7, 0, 0, 0, 2, 0, 0, 0, 6],
+                [0, 6, 0, 0, 0, 0, 2, 8, 0],
+                [0, 0, 0, 4, 1, 9, 0, 0, 5],
+                [0, 0, 0, 0, 8, 0, 0, 7, 9]
+            ];
+
+            for (let i = 0; i < 9; i++) {
                 let row = document.createElement('tr');
-                for(let c=0; c<4; c++) {
+                for (let j = 0; j < 9; j++) {
                     let cell = document.createElement('td');
                     let input = document.createElement('input');
                     input.type = 'text';
                     input.maxLength = 1;
                     input.className = 'sudoku-cell';
+
+                    if (sudokuBoard[i][j] !== 0) {
+                        input.value = sudokuBoard[i][j];
+                        input.disabled = true;
+                    }
+
                     cell.appendChild(input);
                     row.appendChild(cell);
                 }
@@ -235,7 +254,7 @@
 
         // Kakuro Implementation (simple 3x3 demo)
         function initKakuro() {
-            const grid = document.querySelector('.kakuro-grid');
+            const grid = document.querySelector('#kakuro-grid');
             grid.innerHTML = '';
             for(let r=0; r<3; r++) {
                 let row = document.createElement('tr');
@@ -264,7 +283,7 @@
 
         // Slitherlink Implementation (simple 3x3 demo)
         function initSlitherlink() {
-            const grid = document.querySelector('.slitherlink-grid');
+            const grid = document.querySelector('#slitherlink-grid');
             grid.innerHTML = '';
             for(let r=0; r<3; r++) {
                 let row = document.createElement('div');
